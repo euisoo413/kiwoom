@@ -22,7 +22,7 @@ class Kiwoom(QAxWidget):
 
         self.signal_login_CommConnect()
         self.get_account_info()
-        self.detail_account_info()
+        self.detail_account_info() # 예수금을 가져오기.
 
 
         #아래 함수로 응용프로그램을 제어할 수 있음
@@ -33,7 +33,7 @@ class Kiwoom(QAxWidget):
 #이벤트 슬롯으로 정보 받도록할것
     def event_slots(self):
         self.OnEventConnect.connect(self.login_slot)
-        self.OnReceiveTrData.connect(self.trdata_slot)
+        self.OnReceiveTrData.connect(self.trdata_slot) #모든 tr요청은 여기서만!!
         #티알 요청에[ 대한 슬롯을 티알데이터_슬롯으료 받음))
 
     def login_slot(self, errCode):
@@ -43,7 +43,6 @@ class Kiwoom(QAxWidget):
 
     def signal_login_CommConnect(self):
         self.dynamicCall("CommConnect()")
-
         self.login_event_loop = QEventLoop()
         self.login_event_loop.exec_()
 
@@ -80,5 +79,10 @@ class Kiwoom(QAxWidget):
 
         if sRQName == "예수금상세현황요청":
             deposit = self.dynamicCall("GetCommData(string, string, int, string)",sTrCode, sRQName, 0, "예수금")
-            print("예수금 %s" % deposit)
+            print("예수금 %s" % type(deposit))
+            print("예수금 %s" % int(deposit))
+            int(deposit)#형변환 원래는 문자열 --> 숫자로 바꿔줌
             #GetCommData로 데이터 꺼내온다 (뭔가 이벤트 루프에 걸려있는 데이터를 꺼내옴
+
+            ok_deposit = self.dynamicCall("GetCommData(string, string, int, string)", sTrCode, sRQName, 0, "출금가능금액")
+            print("출금가능금액 %s" % int(ok_deposit))
